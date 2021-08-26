@@ -1,0 +1,11 @@
+.vs/
+.vscode/
+.idea/
+
+build/
+cmake-build-*
+CMakeFiles/
+
+out/
+_deps/
+

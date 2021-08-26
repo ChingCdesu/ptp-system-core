@@ -1,0 +1,19 @@
+[submodule "thirdparty/DuckX"]
+	path = thirdparty/DuckX
+	url = https://github.com/amiremohamadi/DuckX.git
+[submodule "thirdparty/OpenXLSX"]
+	path = thirdparty/OpenXLSX
+	url = https://github.com/troldal/OpenXLSX.git
+	
+[submodule "thirdparty/easyloggingpp"]
+	path = thirdparty/easyloggingpp
+	url = https://github.com/amrayn/easyloggingpp.git
+[submodule "thirdparty/fmt"]
+	path = thirdparty/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "thirdparty/libuv"]
+	path = thirdparty/libuv
+	url = https://github.com/libuv/libuv.git
+[submodule "thirdparty/drogon"]
+	path = thirdparty/drogon
+	url = https://github.com/drogonframework/drogon.git
