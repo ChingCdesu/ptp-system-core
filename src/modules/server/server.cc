@@ -4,15 +4,17 @@
  * @brief drogon服务器实现
  * @version 0.1
  * @date 2021-08-27
- * 
+ *
  * @copyright Copyright (c) 2021
- * 
+ *
  */
 
 #include "server.h"
 
 namespace ptp {
 namespace module {
+using namespace std::chrono_literals;
+
 PATTERN_SINGLETON_IMPLEMENT(Server);
 
 Server::Server() {
@@ -35,7 +37,22 @@ RC Server::Start() {
     PTP_INFO("server startup on http://127.0.0.1:8848");
     drogon::app().addListener("127.0.0.1", 8848).run();
   });
-  return RC::SUCCESS;
+  auto task = std::async(std::launch::async, [] {
+    while (!drogon::app().isRunning()) {
+      std::this_thread::sleep_for(1s);
+    }
+    return drogon::app().isRunning();
+  });
+  auto task_status = task.wait_for(10s);
+  bool running = false;
+  RC rc;
+  if (std::future_status::ready == task_status) {
+    running = task.get();
+    rc = running ? RC::SUCCESS : RC::FAILURE;
+  } else {
+    rc = RC::TIMEOUT;
+  }
+  return rc;
 }
 
 RC Server::Stop() {

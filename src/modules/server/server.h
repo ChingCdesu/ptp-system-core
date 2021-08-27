@@ -15,10 +15,13 @@
 #include <drogon/drogon.h>
 
 #include <thread>
+#include <chrono>
+#include <future>
 
 #include "common/enums/returns.h"
 #include "common/macros/singleton.h"
-#include "common/module.h"
+#include "common/class/module.h"
+#include "modules/logger/logger_impl.h"
 
 namespace ptp {
 namespace module {

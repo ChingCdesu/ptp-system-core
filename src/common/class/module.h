@@ -1,7 +1,7 @@
 /**
  * @file module.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief 模块类声明，函数声明
+ * @brief 模块类声明
  * @version 0.1
  * @date 2021-08-25
  *
@@ -12,15 +12,12 @@
 #ifndef PTP__MODULE_H
 #define PTP__MODULE_H
 
-#include <chrono>
-#include <future>
 #include <string>
 
 #include "common/enums/module_status.h"
 #include "common/enums/returns.h"
 #include "modules/logger/logger_impl.h"
 
-using namespace std::chrono_literals;
 namespace ptp {
 namespace common {
 
@@ -42,10 +39,6 @@ class Module {
 
   virtual ~Module() {}
 };
-
-ReturnCode StartModule(Module& interface);
-
-ReturnCode StopModule(Module& interface);
 
 }  // namespace common
 }  // namespace ptp

@@ -9,12 +9,12 @@
  * 
  */
 
-#include <uv.h>
-
 #include <chrono>
 #include <thread>
 
-#include "common/module.h"
+#include <uv.h>
+#include <spdlog/stopwatch.h>
+
 #include "modules/logger/logger_impl.h"
 #include "modules/server/server.h"
 
@@ -24,15 +24,17 @@ void StartAllModules() {
   g_LoggerImpl.Start();
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   PTP_INFO("Starting modules...");
-  ptp::common::StartModule(g_serverImpl);
-  PTP_INFO("Finished starting up");
+  spdlog::stopwatch sw;
+  g_serverImpl.Start();
+  PTP_INFO("Finished starting up, elapsed {:.3}s", sw);
 }
 
 void StopAllModules() {
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   PTP_INFO("Stoping modules...");
-  ptp::common::StopModule(g_serverImpl);
-  PTP_INFO("Finished shutdown");
+  spdlog::stopwatch sw;
+  g_serverImpl.Stop();
+  PTP_INFO("Finished shutdown, elapsed {:.3}s", sw);
   g_LoggerImpl.Stop();
 }
 
