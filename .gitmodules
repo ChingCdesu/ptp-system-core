@@ -4,10 +4,6 @@
 [submodule "thirdparty/OpenXLSX"]
 	path = thirdparty/OpenXLSX
 	url = https://github.com/troldal/OpenXLSX.git
-	
-[submodule "thirdparty/easyloggingpp"]
-	path = thirdparty/easyloggingpp
-	url = https://github.com/amrayn/easyloggingpp.git
 [submodule "thirdparty/fmt"]
 	path = thirdparty/fmt
 	url = https://github.com/fmtlib/fmt.git
@@ -17,3 +13,6 @@
 [submodule "thirdparty/drogon"]
 	path = thirdparty/drogon
 	url = https://github.com/drogonframework/drogon.git
+[submodule "thirdparty/spdlog"]
+	path = thirdparty/spdlog
+	url = https://github.com/gabime/spdlog.git

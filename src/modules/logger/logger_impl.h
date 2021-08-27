@@ -12,22 +12,25 @@
 #ifndef PTP__LOGGER_IMPL_H
 #define PTP__LOGGER_IMPL_H
 
-#include <easylogging++.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/async.h>
 #include <fmt/core.h>
 
 #include "common/enums/returns.h"
 #include "common/macros/singleton.h"
-#include "common/module.h"
 
 namespace ptp {
 namespace module {
 
-class Logger : public ptp::common::Module {
+class Logger {
   PATTERN_SINGLETON_DECLARE(Logger);
 
+ private:
+
+
  public:
-  RC Start() override;
-  RC Stop() override;
+  RC Start();
+  RC Stop();
 };
 
 }  // namespace module
@@ -35,12 +38,11 @@ class Logger : public ptp::common::Module {
 
 #define g_LoggerImpl (*ptp::module::Logger::Instance())
 
-#define PTP_VERBOSE(...) LOG(VERBOSE) << fmt::format(__VA_ARGS__)
-#define PTP_TRACE(...) LOG(TRACE) << fmt::format(__VA_ARGS__)
-#define PTP_DEBUG(...) LOG(DEBUG) << fmt::format(__VA_ARGS__)
-#define PTP_INFO(...) LOG(INFO) << fmt::format(__VA_ARGS__)
-#define PTP_WARNING(...) LOG(WARNING) << fmt::format(__VA_ARGS__)
-#define PTP_ERROR(...) LOG(ERROR) << fmt::format(__VA_ARGS__)
-#define PTP_FATAL(...) LOG(FATAL) << fmt::format(__VA_ARGS__)
+#define PTP_TRACE(...) SPDLOG_TRACE(__VA_ARGS__)
+#define PTP_DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)
+#define PTP_INFO(...) SPDLOG_INFO(__VA_ARGS__)
+#define PTP_WARNING(...) SPDLOG_WARN(__VA_ARGS__)
+#define PTP_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
+#define PTP_FATAL(...) SPDLOG_CRITICAL(__VA_ARGS__)
 
 #endif

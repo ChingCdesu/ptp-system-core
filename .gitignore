@@ -9,3 +9,5 @@ CMakeFiles/
 out/
 _deps/
 
+*.log
+uploads/

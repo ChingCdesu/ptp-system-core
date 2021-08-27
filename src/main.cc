@@ -5,7 +5,9 @@
 #include <thread>
 #include <mysql.h>
 
+#include "common/module.h"
 #include "modules/logger/logger_impl.h"
+#include "modules/server/server.h"
 
 using namespace std::chrono_literals;
 
@@ -13,12 +15,14 @@ void StartAllModules() {
   g_LoggerImpl.Start();
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   PTP_INFO("Starting modules...");
+  ptp::common::StartModule(g_serverImpl);
   PTP_INFO("Finished starting up");
 }
 
 void StopAllModules() {
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   PTP_INFO("Stoping modules...");
+  ptp::common::StopModule(g_serverImpl);
   PTP_INFO("Finished shutdown");
   g_LoggerImpl.Stop();
 }
@@ -38,8 +42,6 @@ int main() {
   StartAllModules();
 
   uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-
-  StopAllModules();
 
   return 0;
 }
