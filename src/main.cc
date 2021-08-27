@@ -1,9 +1,18 @@
+/**
+ * @file main.cc
+ * @author _ChingC (chingc.ccmail@gmail.com)
+ * @brief 入口文件，包含信号处理和模块启动停止功能
+ * @version 0.1
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include <uv.h>
 
 #include <chrono>
-#include <iostream>
 #include <thread>
-#include <mysql.h>
 
 #include "common/module.h"
 #include "modules/logger/logger_impl.h"

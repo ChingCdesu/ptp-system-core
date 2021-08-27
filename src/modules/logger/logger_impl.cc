@@ -1,7 +1,7 @@
 /**
  * @file logger_impl.cc
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief
+ * @brief 日志模块实现
  * @version 0.1
  * @date 2021-08-25
  *

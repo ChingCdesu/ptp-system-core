@@ -1,3 +1,14 @@
+/**
+ * @file server.h
+ * @author _ChingC (chingc.ccmail@gmail.com)
+ * @brief drogon服务器声明
+ * @version 0.1
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef PTP__SERVER_H
 #define PTP__SERVER_H
 

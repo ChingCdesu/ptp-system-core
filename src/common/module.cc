@@ -1,3 +1,14 @@
+/**
+ * @file module.cc
+ * @author _ChingC (chingc.ccmail@gmail.com)
+ * @brief 模块函数实现
+ * @version 0.1
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "module.h"
 
 namespace ptp {

@@ -1,7 +1,7 @@
 /**
  * @file logger_impl.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief
+ * @brief 日志模块声明，但此模块不属于ptp::common::Module的子类
  * @version 0.1
  * @date 2021-08-25
  *

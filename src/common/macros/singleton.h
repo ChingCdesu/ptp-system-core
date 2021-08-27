@@ -1,7 +1,7 @@
 /**
  * @file singleton.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief Declaration and implement of singleton
+ * @brief 单例模式声明和实现
  * @version 0.1
  * @date 2021-08-25
  * 

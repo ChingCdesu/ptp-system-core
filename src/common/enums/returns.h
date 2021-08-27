@@ -1,7 +1,7 @@
 /**
  * @file returns.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief Define all return codes
+ * @brief 返回值
  * @version 0.1
  * @date 2021-08-25
  *

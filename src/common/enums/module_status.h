@@ -1,7 +1,7 @@
 /**
  * @file module_status.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief Declare module running status
+ * @brief 模块运行状态
  * @version 0.1
  * @date 2021-08-25
  *

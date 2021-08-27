@@ -1,7 +1,7 @@
 /**
  * @file module.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief Base Module Class
+ * @brief 模块类声明，函数声明
  * @version 0.1
  * @date 2021-08-25
  *
