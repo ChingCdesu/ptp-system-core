@@ -11,3 +11,5 @@ _deps/
 
 *.log
 uploads/
+
+.DS_Store

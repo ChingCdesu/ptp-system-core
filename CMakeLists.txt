@@ -14,6 +14,7 @@ set(CREATE_DOCS OFF)
 set(BUILD_SAMPLES OFF)
 set(BUILD_TESTS OFF)
 set(BUILD_BENCHMARKS OFF)
+set(CMAKE_DISABLE_TESTING ON)
 
 # spdlog 日志库
 add_subdirectory(thirdparty/spdlog)
@@ -27,7 +28,7 @@ add_subdirectory(thirdparty/drogon)
 # libuv 事件驱动库
 add_subdirectory(thirdparty/libuv)
 
-# DOCX 读写库
+# DOCX 读写库和依赖
 add_subdirectory(thirdparty/DuckX)
 
 # XLSX 读写库

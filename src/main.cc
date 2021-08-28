@@ -16,7 +16,9 @@
 #include <spdlog/stopwatch.h>
 
 #include "modules/logger/logger_impl.h"
+
 #include "modules/server/server.h"
+#include "modules/docx/service.h"
 
 using namespace std::chrono_literals;
 
@@ -25,6 +27,7 @@ void StartAllModules() {
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   PTP_INFO("Starting modules...");
   spdlog::stopwatch sw;
+  g_docxService.Start();
   g_serverImpl.Start();
   PTP_INFO("Finished starting up, elapsed {:.3}s", sw);
 }
@@ -34,6 +37,7 @@ void StopAllModules() {
   PTP_INFO("Stoping modules...");
   spdlog::stopwatch sw;
   g_serverImpl.Stop();
+  g_docxService.Stop();
   PTP_INFO("Finished shutdown, elapsed {:.3}s", sw);
   g_LoggerImpl.Stop();
 }
@@ -51,6 +55,8 @@ int main() {
   uv_signal_start(&sig, SignalCallback, SIGINT);
 
   StartAllModules();
+
+  g_docxService.testDocx("1170280043-陈心远-开题报告v2.docx");
 
   uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 

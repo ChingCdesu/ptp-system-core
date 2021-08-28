@@ -16,7 +16,9 @@ namespace ptp {
 namespace common {
 enum ModuleStatus {
   STOPING = 0,
-  RUNNING = 1,
+  STOPPED,
+  RUNNING,
+  FAILED,
 };
 }  // namespace common
 }  // namespace ptp
