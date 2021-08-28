@@ -19,6 +19,7 @@
 
 #include "modules/server/server.h"
 #include "modules/docx/service.h"
+#include "modules/xlsx/service.h"
 
 using namespace std::chrono_literals;
 
@@ -57,6 +58,7 @@ int main() {
   StartAllModules();
 
   g_docxService.testDocx("1170280043-陈心远-开题报告v2.docx");
+  g_xlsxService.testXlsx("./test.xlsx");
 
   uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 

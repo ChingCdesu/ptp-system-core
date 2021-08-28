@@ -56,6 +56,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   duckx
   drogon
   spdlog
-  OpenXLSX-static
+  OpenXLSX-shared
   ${MYSQL_LIBRARIES}
 )
