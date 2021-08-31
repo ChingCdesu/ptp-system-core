@@ -1,7 +1,7 @@
 /**
  * @file server.cc
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief drogon服务器实现
+ * @brief 服务器类实现
  * @version 0.1
  * @date 2021-08-27
  *
@@ -38,11 +38,11 @@ RC Server::Start() {
     PTP_INFO("server startup on http://127.0.0.1:8848");
     drogon::app().addListener("127.0.0.1", 8848).run();
   });
-  auto task = std::async(std::launch::async, [this] {
+  auto launch = std::async(std::launch::async, [this] {
     while (!drogon::app().isRunning());
     status_ = ptp::common::RUNNING;
   });
-  auto task_status = task.wait_for(10s);
+  auto task_status = launch.wait_for(10s);
   bool running = false;
   RC rc;
   if (std::future_status::ready == task_status) {

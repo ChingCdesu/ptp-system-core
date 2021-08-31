@@ -1,0 +1,105 @@
+{
+  //rdbms: server type, postgresql,mysql or sqlite3
+  "rdbms": "mysql",
+  //filename: sqlite3 db file name
+  //"filename":"",
+  //host: server address,localhost by default;
+  "host": "127.0.0.1",
+  //port: server port, 5432 by default;
+  "port": 3306,
+  //dbname: Database name;
+  "dbname": "ptp_system",
+  //schema: valid for postgreSQL, "public" by default;
+  // "schema": "public",
+  //user: User name
+  "user": "root",
+  //password or passwd: Password
+  "password": "ChingC.local1",
+  //client_encoding: The character set used by drogon_ctl. it is empty string by default which
+  //means use the default character set.
+  //"client_encoding": "utf-8",
+  //table: An array of tables to be modelized. if the array is empty, all revealed tables are modelized.
+  "tables": [
+    // tables
+    "ptp_course",
+    "ptp_group",
+    "ptp_module",
+    "ptp_privilege",
+    "ptp_subject",
+    "ptp_template",
+    "ptp_user",
+    // meta tables
+    "ptp_course_meta",
+    "ptp_group_meta",
+    "ptp_module_meta",
+    "ptp_privilege_meta",
+    "ptp_subject_meta",
+    "ptp_template_meta",
+    "ptp_user_meta"
+    // views
+  ],
+  "relationships": {
+    "enabled": false
+    //    "items": [
+    //      {
+    //        "type": "has one",
+    //        "original_table_name": "products",
+    //        "original_table_alias": "product",
+    //        "original_key": "id",
+    //        "target_table_name": "skus",
+    //        "target_table_alias": "SKU",
+    //        "target_key": "product_id",
+    //        "enable_reverse": true
+    //      },
+    //      {
+    //        "type": "has many",
+    //        "original_table_name": "products",
+    //        "original_table_alias": "product",
+    //        "original_key": "id",
+    //        "target_table_name": "reviews",
+    //        "target_table_alias": "",
+    //        "target_key": "product_id",
+    //        "enable_reverse": true
+    //      },
+    //      {
+    //        "type": "many to many",
+    //        "original_table_name": "products",
+    //        "original_table_alias": "",
+    //        "original_key": "id",
+    //        "pivot_table": {
+    //          "table_name": "carts_products",
+    //          "original_key": "product_id",
+    //          "target_key": "cart_id"
+    //        },
+    //        "target_table_name": "carts",
+    //        "target_table_alias": "",
+    //        "target_key": "id",
+    //        "enable_reverse": true
+    //      }
+    //    ]
+  },
+  "restful_api_controllers": {
+    "enabled": false,
+    // resource_uri: The URI to access the resource, the default value
+    // is '/*' in which the asterisk represents the table name.
+    // If this option is set to a empty string, the URI is composed of the namespaces and the class name.
+    "resource_uri": "/*",
+    // class_name: "Restful*Ctrl" by default, the asterisk represents the table name.
+    // This option can contain namespaces.
+    "class_name": "Restful*Ctrl",
+    // filters: an array of filter names.
+    "filters": [],
+    // db_client: the database client used by the controller. this option must be consistent with
+    // the configuration of the application.
+    "db_client": {
+      //name: Name of the client,'default' by default
+      "name": "default",
+      //is_fast:
+      "is_fast": false
+    },
+    // directory: The directory where the controller source files are stored.
+    "directory": "controllers",
+    // generate_base_only: false by default. Set to true to avoid overwriting custom subclasses.
+    "generate_base_only": false
+  }
+}

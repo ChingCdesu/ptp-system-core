@@ -27,7 +27,6 @@ class Logger {
 
  private:
 
-
  public:
   RC Start();
   RC Stop();
@@ -36,7 +35,7 @@ class Logger {
 }  // namespace module
 }  // namespace ptp
 
-#define g_LoggerImpl (*ptp::module::Logger::Instance())
+#define g_Logger (*ptp::module::Logger::Instance())
 
 #define PTP_TRACE(...) SPDLOG_TRACE(__VA_ARGS__)
 #define PTP_DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)

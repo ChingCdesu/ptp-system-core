@@ -1,7 +1,7 @@
 /**
  * @file server.h
  * @author _ChingC (chingc.ccmail@gmail.com)
- * @brief drogon服务器声明
+ * @brief 服务器类声明
  * @version 0.1
  * @date 2021-08-27
  * 
@@ -37,6 +37,6 @@ class Server : public ptp::common::Module {
 }  // namespace module
 }  // namespace ptp
 
-#define g_serverImpl (*ptp::module::Server::Instance())
+#define g_Server (*ptp::module::Server::Instance())
 
 #endif

@@ -14,14 +14,6 @@
 namespace ptp {
 namespace common {
 
-/**
- * @brief All function return code
- * 
- * @version 0.1
- * @author _ChingC (chingc.ccmail@gmail.com)
- * @date 2021-08-25
- * @copyright Copyright (c) 2021
- */
 enum ReturnCode {
   SUCCESS = 0,
   FAILURE = 1,
