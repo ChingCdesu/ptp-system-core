@@ -25,21 +25,28 @@ Server::Server() {
 Server::~Server() {}
 
 RC Server::Start() {
-  drogon::app().registerHandler(
-      "/",
-      [](const drogon::HttpRequestPtr&,
-         std::function<void(const drogon::HttpResponsePtr&)>&& callback) {
-        auto resp = drogon::HttpResponse::newHttpResponse();
-        resp->setBody("Hello, World!");
-        callback(resp);
-      },
-      {drogon::Get});
+  drogon::app()
+      .createDbClient("mysql", "127.0.0.1", 3306, "ptp_system", "root",
+                      "ChingC.local1")
+      .registerPreRoutingAdvice([](const drogon::HttpRequestPtr& req) {
+        req->addHeader("request_id", std::to_string(++request_id_));
+        PTP_INFO("request {}: {} - - {} {} \nUser-Agent: {}", request_id_,
+                 req->getPeerAddr().toIp(), req->getMethodString(),
+                 req->getPath(), req->getHeader("User-Agent"));
+      })
+      .registerPostHandlingAdvice([](const drogon::HttpRequestPtr& req,
+                                     const drogon::HttpResponsePtr& res) {
+        PTP_INFO("response {}: {} - {} bytes", req->getHeader("request_id"),
+                 res->getStatusCode(), res->getBody().length());
+      })
+      .addListener("127.0.0.1", 9000);
   thread_ = std::thread([] {
-    PTP_INFO("server startup on http://127.0.0.1:8848");
-    drogon::app().addListener("127.0.0.1", 8848).run();
+    PTP_INFO("server startup on http://127.0.0.1:9000");
+    drogon::app().run();
   });
   auto launch = std::async(std::launch::async, [this] {
-    while (!drogon::app().isRunning());
+    while (!drogon::app().isRunning())
+      ;
     status_ = ptp::common::RUNNING;
   });
   auto task_status = launch.wait_for(10s);
@@ -64,5 +71,6 @@ RC Server::Stop() {
   status_ = ptp::common::STOPPED;
   return RC::SUCCESS;
 }
+uint64_t Server::request_id_ = 0;
 }  // namespace module
 }  // namespace ptp

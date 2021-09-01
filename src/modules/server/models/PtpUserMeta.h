@@ -47,6 +47,7 @@ class PtpUserMeta
         static const std::string _relative_id;
         static const std::string _meta_name;
         static const std::string _meta_value;
+        static const std::string _visible;
     };
 
     const static int primaryKeyNumber;
@@ -140,8 +141,18 @@ class PtpUserMeta
     void setMetaValue(std::string &&pMetaValue) noexcept;
 
 
+    /**  For column visible  */
+    ///Get the value of the column visible, returns the default value if the column is null
+    const int32_t &getValueOfVisible() const noexcept;
+    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
+    const std::shared_ptr<int32_t> &getVisible() const noexcept;
 
-    static size_t getColumnNumber() noexcept {  return 4;  }
+    ///Set the value of the column visible
+    void setVisible(const int32_t &pVisible) noexcept;
+
+
+
+    static size_t getColumnNumber() noexcept {  return 5;  }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
     Json::Value toJson() const;
@@ -162,6 +173,7 @@ class PtpUserMeta
     std::shared_ptr<int32_t> relativeId_;
     std::shared_ptr<std::string> metaName_;
     std::shared_ptr<std::string> metaValue_;
+    std::shared_ptr<int32_t> visible_;
     struct MetaData
     {
         const std::string colName_;
@@ -173,7 +185,7 @@ class PtpUserMeta
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[4]={ false };
+    bool dirtyFlag_[5]={ false };
   public:
     static const std::string &sqlForFindingByPrimaryKey()
     {
@@ -208,6 +220,12 @@ class PtpUserMeta
             sql += "meta_value,";
             ++parametersCount;
         }
+        sql += "visible,";
+        ++parametersCount;
+        if(!dirtyFlag_[4])
+        {
+            needSelection=true;
+        }
         needSelection=true;
         if(parametersCount > 0)
         {
@@ -233,6 +251,15 @@ class PtpUserMeta
             sql.append("?,");
 
         } 
+        if(dirtyFlag_[4])
+        {
+            sql.append("?,");
+
+        } 
+        else
+        {
+            sql +="default,";
+        }
         if(parametersCount > 0)
         {
             sql.resize(sql.length() - 1);

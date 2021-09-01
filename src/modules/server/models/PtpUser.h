@@ -45,8 +45,6 @@ class PtpUser
     {
         static const std::string _id;
         static const std::string _account;
-        static const std::string _password;
-        static const std::string _token;
         static const std::string _banned;
         static const std::string _groups;
     };
@@ -121,29 +119,6 @@ class PtpUser
     void setAccount(std::string &&pAccount) noexcept;
 
 
-    /**  For column password  */
-    ///Get the value of the column password, returns the default value if the column is null
-    const std::string &getValueOfPassword() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getPassword() const noexcept;
-
-    ///Set the value of the column password
-    void setPassword(const std::string &pPassword) noexcept;
-    void setPassword(std::string &&pPassword) noexcept;
-
-
-    /**  For column token  */
-    ///Get the value of the column token, returns the default value if the column is null
-    const std::string &getValueOfToken() const noexcept;
-    ///Return a shared_ptr object pointing to the column const value, or an empty shared_ptr object if the column is null
-    const std::shared_ptr<std::string> &getToken() const noexcept;
-
-    ///Set the value of the column token
-    void setToken(const std::string &pToken) noexcept;
-    void setToken(std::string &&pToken) noexcept;
-    void setTokenToNull() noexcept;
-
-
     /**  For column banned  */
     ///Get the value of the column banned, returns the default value if the column is null
     const int32_t &getValueOfBanned() const noexcept;
@@ -166,7 +141,7 @@ class PtpUser
 
 
 
-    static size_t getColumnNumber() noexcept {  return 6;  }
+    static size_t getColumnNumber() noexcept {  return 4;  }
     static const std::string &getColumnName(size_t index) noexcept(false);
 
     Json::Value toJson() const;
@@ -185,8 +160,6 @@ class PtpUser
     void updateId(const uint64_t id);
     std::shared_ptr<int32_t> id_;
     std::shared_ptr<std::string> account_;
-    std::shared_ptr<std::string> password_;
-    std::shared_ptr<std::string> token_;
     std::shared_ptr<int32_t> banned_;
     std::shared_ptr<std::string> groups_;
     struct MetaData
@@ -200,7 +173,7 @@ class PtpUser
         const bool notNull_;
     };
     static const std::vector<MetaData> metaData_;
-    bool dirtyFlag_[6]={ false };
+    bool dirtyFlag_[4]={ false };
   public:
     static const std::string &sqlForFindingByPrimaryKey()
     {
@@ -225,23 +198,13 @@ class PtpUser
             sql += "account,";
             ++parametersCount;
         }
-        if(dirtyFlag_[2])
-        {
-            sql += "password,";
-            ++parametersCount;
-        }
-        if(dirtyFlag_[3])
-        {
-            sql += "token,";
-            ++parametersCount;
-        }
         sql += "banned,";
         ++parametersCount;
-        if(!dirtyFlag_[4])
+        if(!dirtyFlag_[2])
         {
             needSelection=true;
         }
-        if(dirtyFlag_[5])
+        if(dirtyFlag_[3])
         {
             sql += "groups,";
             ++parametersCount;
@@ -266,21 +229,11 @@ class PtpUser
             sql.append("?,");
 
         } 
-        if(dirtyFlag_[3])
-        {
-            sql.append("?,");
-
-        } 
-        if(dirtyFlag_[4])
-        {
-            sql.append("?,");
-
-        } 
         else
         {
             sql +="default,";
         }
-        if(dirtyFlag_[5])
+        if(dirtyFlag_[3])
         {
             sql.append("?,");
 

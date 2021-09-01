@@ -30,6 +30,7 @@ class Server : public ptp::common::Module {
 
  private:
   std::thread thread_;
+  static uint64_t request_id_;
  public:
   RC Start() override;
   RC Stop() override;

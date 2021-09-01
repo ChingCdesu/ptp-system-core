@@ -16,6 +16,7 @@ const std::string PtpUserMeta::Cols::_id = "id";
 const std::string PtpUserMeta::Cols::_relative_id = "relative_id";
 const std::string PtpUserMeta::Cols::_meta_name = "meta_name";
 const std::string PtpUserMeta::Cols::_meta_value = "meta_value";
+const std::string PtpUserMeta::Cols::_visible = "visible";
 const std::string PtpUserMeta::primaryKeyName = "id";
 const bool PtpUserMeta::hasPrimaryKey = true;
 const std::string PtpUserMeta::tableName = "ptp_user_meta";
@@ -24,7 +25,8 @@ const std::vector<typename PtpUserMeta::MetaData> PtpUserMeta::metaData_={
 {"id","int32_t","int",4,1,1,1},
 {"relative_id","int32_t","int",4,0,0,1},
 {"meta_name","std::string","varchar(255)",255,0,0,1},
-{"meta_value","std::string","json",0,0,0,1}
+{"meta_value","std::string","json",0,0,0,1},
+{"visible","int32_t","int",4,0,0,1}
 };
 const std::string &PtpUserMeta::getColumnName(size_t index) noexcept(false)
 {
@@ -51,11 +53,15 @@ PtpUserMeta::PtpUserMeta(const Row &r, const ssize_t indexOffset) noexcept
         {
             metaValue_=std::make_shared<std::string>(r["meta_value"].as<std::string>());
         }
+        if(!r["visible"].isNull())
+        {
+            visible_=std::make_shared<int32_t>(r["visible"].as<int32_t>());
+        }
     }
     else
     {
         size_t offset = (size_t)indexOffset;
-        if(offset + 4 > r.size())
+        if(offset + 5 > r.size())
         {
             LOG_FATAL << "Invalid SQL result for this model";
             return;
@@ -81,13 +87,18 @@ PtpUserMeta::PtpUserMeta(const Row &r, const ssize_t indexOffset) noexcept
         {
             metaValue_=std::make_shared<std::string>(r[index].as<std::string>());
         }
+        index = offset + 4;
+        if(!r[index].isNull())
+        {
+            visible_=std::make_shared<int32_t>(r[index].as<int32_t>());
+        }
     }
 
 }
 
 PtpUserMeta::PtpUserMeta(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 5)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -126,6 +137,14 @@ PtpUserMeta::PtpUserMeta(const Json::Value &pJson, const std::vector<std::string
 
         }
     }
+    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
+    {
+        dirtyFlag_[4] = true;
+        if(!pJson[pMasqueradingVector[4]].isNull())
+        {
+            visible_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        }
+    }
 }
 
 PtpUserMeta::PtpUserMeta(const Json::Value &pJson) noexcept(false)
@@ -162,12 +181,20 @@ PtpUserMeta::PtpUserMeta(const Json::Value &pJson) noexcept(false)
             metaValue_=std::make_shared<std::string>(pJson["meta_value"].asString());
         }
     }
+    if(pJson.isMember("visible"))
+    {
+        dirtyFlag_[4]=true;
+        if(!pJson["visible"].isNull())
+        {
+            visible_=std::make_shared<int32_t>((int32_t)pJson["visible"].asInt64());
+        }
+    }
 }
 
 void PtpUserMeta::updateByMasqueradedJson(const Json::Value &pJson,
                                             const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 5)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -203,6 +230,14 @@ void PtpUserMeta::updateByMasqueradedJson(const Json::Value &pJson,
             metaValue_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
         }
     }
+    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
+    {
+        dirtyFlag_[4] = true;
+        if(!pJson[pMasqueradingVector[4]].isNull())
+        {
+            visible_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
+        }
+    }
 }
                                                                     
 void PtpUserMeta::updateByJson(const Json::Value &pJson) noexcept(false)
@@ -236,6 +271,14 @@ void PtpUserMeta::updateByJson(const Json::Value &pJson) noexcept(false)
         if(!pJson["meta_value"].isNull())
         {
             metaValue_=std::make_shared<std::string>(pJson["meta_value"].asString());
+        }
+    }
+    if(pJson.isMember("visible"))
+    {
+        dirtyFlag_[4] = true;
+        if(!pJson["visible"].isNull())
+        {
+            visible_=std::make_shared<int32_t>((int32_t)pJson["visible"].asInt64());
         }
     }
 }
@@ -335,6 +378,26 @@ void PtpUserMeta::setMetaValue(std::string &&pMetaValue) noexcept
 
 
 
+const int32_t &PtpUserMeta::getValueOfVisible() const noexcept
+{
+    const static int32_t defaultValue = int32_t();
+    if(visible_)
+        return *visible_;
+    return defaultValue;
+}
+const std::shared_ptr<int32_t> &PtpUserMeta::getVisible() const noexcept
+{
+    return visible_;
+}
+void PtpUserMeta::setVisible(const int32_t &pVisible) noexcept
+{
+    visible_ = std::make_shared<int32_t>(pVisible);
+    dirtyFlag_[4] = true;
+}
+
+
+
+
 void PtpUserMeta::updateId(const uint64_t id)
 {
     id_ = std::make_shared<int32_t>(static_cast<int32_t>(id));
@@ -345,7 +408,8 @@ const std::vector<std::string> &PtpUserMeta::insertColumns() noexcept
     static const std::vector<std::string> inCols={
         "relative_id",
         "meta_name",
-        "meta_value"
+        "meta_value",
+        "visible"
     };
     return inCols;
 }
@@ -385,6 +449,17 @@ void PtpUserMeta::outputArgs(drogon::orm::internal::SqlBinder &binder) const
             binder << nullptr;
         }
     }
+    if(dirtyFlag_[4])
+    {
+        if(getVisible())
+        {
+            binder << getValueOfVisible();
+        }
+        else
+        {
+            binder << nullptr;
+        }
+    }
 }
 
 const std::vector<std::string> PtpUserMeta::updateColumns() const
@@ -401,6 +476,10 @@ const std::vector<std::string> PtpUserMeta::updateColumns() const
     if(dirtyFlag_[3])
     {
         ret.push_back(getColumnName(3));
+    }
+    if(dirtyFlag_[4])
+    {
+        ret.push_back(getColumnName(4));
     }
     return ret;
 }
@@ -434,6 +513,17 @@ void PtpUserMeta::updateArgs(drogon::orm::internal::SqlBinder &binder) const
         if(getMetaValue())
         {
             binder << getValueOfMetaValue();
+        }
+        else
+        {
+            binder << nullptr;
+        }
+    }
+    if(dirtyFlag_[4])
+    {
+        if(getVisible())
+        {
+            binder << getValueOfVisible();
         }
         else
         {
@@ -476,6 +566,14 @@ Json::Value PtpUserMeta::toJson() const
     {
         ret["meta_value"]=Json::Value();
     }
+    if(getVisible())
+    {
+        ret["visible"]=getValueOfVisible();
+    }
+    else
+    {
+        ret["visible"]=Json::Value();
+    }
     return ret;
 }
 
@@ -483,7 +581,7 @@ Json::Value PtpUserMeta::toMasqueradedJson(
     const std::vector<std::string> &pMasqueradingVector) const
 {
     Json::Value ret;
-    if(pMasqueradingVector.size() == 4)
+    if(pMasqueradingVector.size() == 5)
     {
         if(!pMasqueradingVector[0].empty())
         {
@@ -529,6 +627,17 @@ Json::Value PtpUserMeta::toMasqueradedJson(
                 ret[pMasqueradingVector[3]]=Json::Value();
             }
         }
+        if(!pMasqueradingVector[4].empty())
+        {
+            if(getVisible())
+            {
+                ret[pMasqueradingVector[4]]=getValueOfVisible();
+            }
+            else
+            {
+                ret[pMasqueradingVector[4]]=Json::Value();
+            }
+        }
         return ret;
     }
     LOG_ERROR << "Masquerade failed";
@@ -563,6 +672,14 @@ Json::Value PtpUserMeta::toMasqueradedJson(
     else
     {
         ret["meta_value"]=Json::Value();
+    }
+    if(getVisible())
+    {
+        ret["visible"]=getValueOfVisible();
+    }
+    else
+    {
+        ret["visible"]=Json::Value();
     }
     return ret;
 }
@@ -604,13 +721,18 @@ bool PtpUserMeta::validateJsonForCreation(const Json::Value &pJson, std::string 
         err="The meta_value column cannot be null";
         return false;
     }
+    if(pJson.isMember("visible"))
+    {
+        if(!validJsonOfField(4, "visible", pJson["visible"], err, true))
+            return false;
+    }
     return true;
 }
 bool PtpUserMeta::validateMasqueradedJsonForCreation(const Json::Value &pJson,
                                                      const std::vector<std::string> &pMasqueradingVector,
                                                      std::string &err)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 5)
     {
         err = "Bad masquerading vector";
         return false;
@@ -663,6 +785,14 @@ bool PtpUserMeta::validateMasqueradedJsonForCreation(const Json::Value &pJson,
             return false;
         }
       }
+      if(!pMasqueradingVector[4].empty())
+      {
+          if(pJson.isMember(pMasqueradingVector[4]))
+          {
+              if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, true))
+                  return false;
+          }
+      }
     }
     catch(const Json::LogicError &e) 
     {
@@ -698,13 +828,18 @@ bool PtpUserMeta::validateJsonForUpdate(const Json::Value &pJson, std::string &e
         if(!validJsonOfField(3, "meta_value", pJson["meta_value"], err, false))
             return false;
     }
+    if(pJson.isMember("visible"))
+    {
+        if(!validJsonOfField(4, "visible", pJson["visible"], err, false))
+            return false;
+    }
     return true;
 }
 bool PtpUserMeta::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
                                                    const std::vector<std::string> &pMasqueradingVector,
                                                    std::string &err)
 {
-    if(pMasqueradingVector.size() != 4)
+    if(pMasqueradingVector.size() != 5)
     {
         err = "Bad masquerading vector";
         return false;
@@ -733,6 +868,11 @@ bool PtpUserMeta::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
       if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
       {
           if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, false))
+              return false;
+      }
+      if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
+      {
+          if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, false))
               return false;
       }
     }
@@ -811,6 +951,18 @@ bool PtpUserMeta::validJsonOfField(size_t index,
             {
                 err="Type error in the "+fieldName+" field";
                 return false;                
+            }
+            break;
+        case 4:
+            if(pJson.isNull())
+            {
+                err="The " + fieldName + " column cannot be null";
+                return false;
+            }
+            if(!pJson.isInt())
+            {
+                err="Type error in the "+fieldName+" field";
+                return false;
             }
             break;
      

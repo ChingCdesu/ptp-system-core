@@ -21,6 +21,8 @@
 #include "modules/server/server.h"
 #include "modules/xlsx/service.h"
 
+#include "common/function/json.h"
+
 void StartAllModules() {
   g_Logger.Start();
   PTP_INFO(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -56,16 +58,6 @@ int main() {
   uv_signal_start(&sig, SignalCallback, SIGINT);
 
   StartAllModules();
-
-  using Node = ptp::common::Interval<int>::Node;
-
-  ptp::common::Interval<int> a(Node(12, ptp::common::CLOSE),
-                               Node(34, ptp::common::CLOSE));
-  ptp::common::Interval<int> b(Node(32, ptp::common::OPEN),
-                               Node(56, ptp::common::CLOSE));
-
-  auto result = a.Intersection(b);
-  PTP_INFO("{}", result.ToString());
 
   uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 

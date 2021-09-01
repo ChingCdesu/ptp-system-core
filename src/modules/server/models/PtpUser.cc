@@ -14,8 +14,6 @@ using namespace drogon_model::ptp_system;
 
 const std::string PtpUser::Cols::_id = "id";
 const std::string PtpUser::Cols::_account = "account";
-const std::string PtpUser::Cols::_password = "password";
-const std::string PtpUser::Cols::_token = "token";
 const std::string PtpUser::Cols::_banned = "banned";
 const std::string PtpUser::Cols::_groups = "groups";
 const std::string PtpUser::primaryKeyName = "id";
@@ -25,8 +23,6 @@ const std::string PtpUser::tableName = "ptp_user";
 const std::vector<typename PtpUser::MetaData> PtpUser::metaData_={
 {"id","int32_t","int",4,1,1,1},
 {"account","std::string","varchar(255)",255,0,0,1},
-{"password","std::string","varchar(255)",255,0,0,1},
-{"token","std::string","varchar(2048)",2048,0,0,0},
 {"banned","int32_t","int",4,0,0,1},
 {"groups","std::string","json",0,0,0,1}
 };
@@ -47,14 +43,6 @@ PtpUser::PtpUser(const Row &r, const ssize_t indexOffset) noexcept
         {
             account_=std::make_shared<std::string>(r["account"].as<std::string>());
         }
-        if(!r["password"].isNull())
-        {
-            password_=std::make_shared<std::string>(r["password"].as<std::string>());
-        }
-        if(!r["token"].isNull())
-        {
-            token_=std::make_shared<std::string>(r["token"].as<std::string>());
-        }
         if(!r["banned"].isNull())
         {
             banned_=std::make_shared<int32_t>(r["banned"].as<int32_t>());
@@ -67,7 +55,7 @@ PtpUser::PtpUser(const Row &r, const ssize_t indexOffset) noexcept
     else
     {
         size_t offset = (size_t)indexOffset;
-        if(offset + 6 > r.size())
+        if(offset + 4 > r.size())
         {
             LOG_FATAL << "Invalid SQL result for this model";
             return;
@@ -86,19 +74,9 @@ PtpUser::PtpUser(const Row &r, const ssize_t indexOffset) noexcept
         index = offset + 2;
         if(!r[index].isNull())
         {
-            password_=std::make_shared<std::string>(r[index].as<std::string>());
-        }
-        index = offset + 3;
-        if(!r[index].isNull())
-        {
-            token_=std::make_shared<std::string>(r[index].as<std::string>());
-        }
-        index = offset + 4;
-        if(!r[index].isNull())
-        {
             banned_=std::make_shared<int32_t>(r[index].as<int32_t>());
         }
-        index = offset + 5;
+        index = offset + 3;
         if(!r[index].isNull())
         {
             groups_=std::make_shared<std::string>(r[index].as<std::string>());
@@ -109,7 +87,7 @@ PtpUser::PtpUser(const Row &r, const ssize_t indexOffset) noexcept
 
 PtpUser::PtpUser(const Json::Value &pJson, const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 6)
+    if(pMasqueradingVector.size() != 4)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -136,8 +114,7 @@ PtpUser::PtpUser(const Json::Value &pJson, const std::vector<std::string> &pMasq
         dirtyFlag_[2] = true;
         if(!pJson[pMasqueradingVector[2]].isNull())
         {
-            password_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
-
+            banned_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[2]].asInt64());
         }
     }
     if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
@@ -145,24 +122,7 @@ PtpUser::PtpUser(const Json::Value &pJson, const std::vector<std::string> &pMasq
         dirtyFlag_[3] = true;
         if(!pJson[pMasqueradingVector[3]].isNull())
         {
-            token_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
-
-        }
-    }
-    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-    {
-        dirtyFlag_[4] = true;
-        if(!pJson[pMasqueradingVector[4]].isNull())
-        {
-            banned_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
-        }
-    }
-    if(!pMasqueradingVector[5].empty() && pJson.isMember(pMasqueradingVector[5]))
-    {
-        dirtyFlag_[5] = true;
-        if(!pJson[pMasqueradingVector[5]].isNull())
-        {
-            groups_=std::make_shared<std::string>(pJson[pMasqueradingVector[5]].asString());
+            groups_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
 
         }
     }
@@ -186,25 +146,9 @@ PtpUser::PtpUser(const Json::Value &pJson) noexcept(false)
             account_=std::make_shared<std::string>(pJson["account"].asString());
         }
     }
-    if(pJson.isMember("password"))
-    {
-        dirtyFlag_[2]=true;
-        if(!pJson["password"].isNull())
-        {
-            password_=std::make_shared<std::string>(pJson["password"].asString());
-        }
-    }
-    if(pJson.isMember("token"))
-    {
-        dirtyFlag_[3]=true;
-        if(!pJson["token"].isNull())
-        {
-            token_=std::make_shared<std::string>(pJson["token"].asString());
-        }
-    }
     if(pJson.isMember("banned"))
     {
-        dirtyFlag_[4]=true;
+        dirtyFlag_[2]=true;
         if(!pJson["banned"].isNull())
         {
             banned_=std::make_shared<int32_t>((int32_t)pJson["banned"].asInt64());
@@ -212,7 +156,7 @@ PtpUser::PtpUser(const Json::Value &pJson) noexcept(false)
     }
     if(pJson.isMember("groups"))
     {
-        dirtyFlag_[5]=true;
+        dirtyFlag_[3]=true;
         if(!pJson["groups"].isNull())
         {
             groups_=std::make_shared<std::string>(pJson["groups"].asString());
@@ -223,7 +167,7 @@ PtpUser::PtpUser(const Json::Value &pJson) noexcept(false)
 void PtpUser::updateByMasqueradedJson(const Json::Value &pJson,
                                             const std::vector<std::string> &pMasqueradingVector) noexcept(false)
 {
-    if(pMasqueradingVector.size() != 6)
+    if(pMasqueradingVector.size() != 4)
     {
         LOG_ERROR << "Bad masquerading vector";
         return;
@@ -248,7 +192,7 @@ void PtpUser::updateByMasqueradedJson(const Json::Value &pJson,
         dirtyFlag_[2] = true;
         if(!pJson[pMasqueradingVector[2]].isNull())
         {
-            password_=std::make_shared<std::string>(pJson[pMasqueradingVector[2]].asString());
+            banned_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[2]].asInt64());
         }
     }
     if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
@@ -256,23 +200,7 @@ void PtpUser::updateByMasqueradedJson(const Json::Value &pJson,
         dirtyFlag_[3] = true;
         if(!pJson[pMasqueradingVector[3]].isNull())
         {
-            token_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
-        }
-    }
-    if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-    {
-        dirtyFlag_[4] = true;
-        if(!pJson[pMasqueradingVector[4]].isNull())
-        {
-            banned_=std::make_shared<int32_t>((int32_t)pJson[pMasqueradingVector[4]].asInt64());
-        }
-    }
-    if(!pMasqueradingVector[5].empty() && pJson.isMember(pMasqueradingVector[5]))
-    {
-        dirtyFlag_[5] = true;
-        if(!pJson[pMasqueradingVector[5]].isNull())
-        {
-            groups_=std::make_shared<std::string>(pJson[pMasqueradingVector[5]].asString());
+            groups_=std::make_shared<std::string>(pJson[pMasqueradingVector[3]].asString());
         }
     }
 }
@@ -294,25 +222,9 @@ void PtpUser::updateByJson(const Json::Value &pJson) noexcept(false)
             account_=std::make_shared<std::string>(pJson["account"].asString());
         }
     }
-    if(pJson.isMember("password"))
-    {
-        dirtyFlag_[2] = true;
-        if(!pJson["password"].isNull())
-        {
-            password_=std::make_shared<std::string>(pJson["password"].asString());
-        }
-    }
-    if(pJson.isMember("token"))
-    {
-        dirtyFlag_[3] = true;
-        if(!pJson["token"].isNull())
-        {
-            token_=std::make_shared<std::string>(pJson["token"].asString());
-        }
-    }
     if(pJson.isMember("banned"))
     {
-        dirtyFlag_[4] = true;
+        dirtyFlag_[2] = true;
         if(!pJson["banned"].isNull())
         {
             banned_=std::make_shared<int32_t>((int32_t)pJson["banned"].asInt64());
@@ -320,7 +232,7 @@ void PtpUser::updateByJson(const Json::Value &pJson) noexcept(false)
     }
     if(pJson.isMember("groups"))
     {
-        dirtyFlag_[5] = true;
+        dirtyFlag_[3] = true;
         if(!pJson["groups"].isNull())
         {
             groups_=std::make_shared<std::string>(pJson["groups"].asString());
@@ -378,61 +290,6 @@ void PtpUser::setAccount(std::string &&pAccount) noexcept
 
 
 
-const std::string &PtpUser::getValueOfPassword() const noexcept
-{
-    const static std::string defaultValue = std::string();
-    if(password_)
-        return *password_;
-    return defaultValue;
-}
-const std::shared_ptr<std::string> &PtpUser::getPassword() const noexcept
-{
-    return password_;
-}
-void PtpUser::setPassword(const std::string &pPassword) noexcept
-{
-    password_ = std::make_shared<std::string>(pPassword);
-    dirtyFlag_[2] = true;
-}
-void PtpUser::setPassword(std::string &&pPassword) noexcept
-{
-    password_ = std::make_shared<std::string>(std::move(pPassword));
-    dirtyFlag_[2] = true;
-}
-
-
-
-
-const std::string &PtpUser::getValueOfToken() const noexcept
-{
-    const static std::string defaultValue = std::string();
-    if(token_)
-        return *token_;
-    return defaultValue;
-}
-const std::shared_ptr<std::string> &PtpUser::getToken() const noexcept
-{
-    return token_;
-}
-void PtpUser::setToken(const std::string &pToken) noexcept
-{
-    token_ = std::make_shared<std::string>(pToken);
-    dirtyFlag_[3] = true;
-}
-void PtpUser::setToken(std::string &&pToken) noexcept
-{
-    token_ = std::make_shared<std::string>(std::move(pToken));
-    dirtyFlag_[3] = true;
-}
-
-
-void PtpUser::setTokenToNull() noexcept
-{
-    token_.reset();
-    dirtyFlag_[3] = true;
-}
-
-
 const int32_t &PtpUser::getValueOfBanned() const noexcept
 {
     const static int32_t defaultValue = int32_t();
@@ -447,7 +304,7 @@ const std::shared_ptr<int32_t> &PtpUser::getBanned() const noexcept
 void PtpUser::setBanned(const int32_t &pBanned) noexcept
 {
     banned_ = std::make_shared<int32_t>(pBanned);
-    dirtyFlag_[4] = true;
+    dirtyFlag_[2] = true;
 }
 
 
@@ -467,12 +324,12 @@ const std::shared_ptr<std::string> &PtpUser::getGroups() const noexcept
 void PtpUser::setGroups(const std::string &pGroups) noexcept
 {
     groups_ = std::make_shared<std::string>(pGroups);
-    dirtyFlag_[5] = true;
+    dirtyFlag_[3] = true;
 }
 void PtpUser::setGroups(std::string &&pGroups) noexcept
 {
     groups_ = std::make_shared<std::string>(std::move(pGroups));
-    dirtyFlag_[5] = true;
+    dirtyFlag_[3] = true;
 }
 
 
@@ -487,8 +344,6 @@ const std::vector<std::string> &PtpUser::insertColumns() noexcept
 {
     static const std::vector<std::string> inCols={
         "account",
-        "password",
-        "token",
         "banned",
         "groups"
     };
@@ -510,28 +365,6 @@ void PtpUser::outputArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[2])
     {
-        if(getPassword())
-        {
-            binder << getValueOfPassword();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[3])
-    {
-        if(getToken())
-        {
-            binder << getValueOfToken();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[4])
-    {
         if(getBanned())
         {
             binder << getValueOfBanned();
@@ -541,7 +374,7 @@ void PtpUser::outputArgs(drogon::orm::internal::SqlBinder &binder) const
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[5])
+    if(dirtyFlag_[3])
     {
         if(getGroups())
         {
@@ -569,14 +402,6 @@ const std::vector<std::string> PtpUser::updateColumns() const
     {
         ret.push_back(getColumnName(3));
     }
-    if(dirtyFlag_[4])
-    {
-        ret.push_back(getColumnName(4));
-    }
-    if(dirtyFlag_[5])
-    {
-        ret.push_back(getColumnName(5));
-    }
     return ret;
 }
 
@@ -595,28 +420,6 @@ void PtpUser::updateArgs(drogon::orm::internal::SqlBinder &binder) const
     }
     if(dirtyFlag_[2])
     {
-        if(getPassword())
-        {
-            binder << getValueOfPassword();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[3])
-    {
-        if(getToken())
-        {
-            binder << getValueOfToken();
-        }
-        else
-        {
-            binder << nullptr;
-        }
-    }
-    if(dirtyFlag_[4])
-    {
         if(getBanned())
         {
             binder << getValueOfBanned();
@@ -626,7 +429,7 @@ void PtpUser::updateArgs(drogon::orm::internal::SqlBinder &binder) const
             binder << nullptr;
         }
     }
-    if(dirtyFlag_[5])
+    if(dirtyFlag_[3])
     {
         if(getGroups())
         {
@@ -657,22 +460,6 @@ Json::Value PtpUser::toJson() const
     {
         ret["account"]=Json::Value();
     }
-    if(getPassword())
-    {
-        ret["password"]=getValueOfPassword();
-    }
-    else
-    {
-        ret["password"]=Json::Value();
-    }
-    if(getToken())
-    {
-        ret["token"]=getValueOfToken();
-    }
-    else
-    {
-        ret["token"]=Json::Value();
-    }
     if(getBanned())
     {
         ret["banned"]=getValueOfBanned();
@@ -696,7 +483,7 @@ Json::Value PtpUser::toMasqueradedJson(
     const std::vector<std::string> &pMasqueradingVector) const
 {
     Json::Value ret;
-    if(pMasqueradingVector.size() == 6)
+    if(pMasqueradingVector.size() == 4)
     {
         if(!pMasqueradingVector[0].empty())
         {
@@ -722,9 +509,9 @@ Json::Value PtpUser::toMasqueradedJson(
         }
         if(!pMasqueradingVector[2].empty())
         {
-            if(getPassword())
+            if(getBanned())
             {
-                ret[pMasqueradingVector[2]]=getValueOfPassword();
+                ret[pMasqueradingVector[2]]=getValueOfBanned();
             }
             else
             {
@@ -733,35 +520,13 @@ Json::Value PtpUser::toMasqueradedJson(
         }
         if(!pMasqueradingVector[3].empty())
         {
-            if(getToken())
+            if(getGroups())
             {
-                ret[pMasqueradingVector[3]]=getValueOfToken();
+                ret[pMasqueradingVector[3]]=getValueOfGroups();
             }
             else
             {
                 ret[pMasqueradingVector[3]]=Json::Value();
-            }
-        }
-        if(!pMasqueradingVector[4].empty())
-        {
-            if(getBanned())
-            {
-                ret[pMasqueradingVector[4]]=getValueOfBanned();
-            }
-            else
-            {
-                ret[pMasqueradingVector[4]]=Json::Value();
-            }
-        }
-        if(!pMasqueradingVector[5].empty())
-        {
-            if(getGroups())
-            {
-                ret[pMasqueradingVector[5]]=getValueOfGroups();
-            }
-            else
-            {
-                ret[pMasqueradingVector[5]]=Json::Value();
             }
         }
         return ret;
@@ -782,22 +547,6 @@ Json::Value PtpUser::toMasqueradedJson(
     else
     {
         ret["account"]=Json::Value();
-    }
-    if(getPassword())
-    {
-        ret["password"]=getValueOfPassword();
-    }
-    else
-    {
-        ret["password"]=Json::Value();
-    }
-    if(getToken())
-    {
-        ret["token"]=getValueOfToken();
-    }
-    else
-    {
-        ret["token"]=Json::Value();
     }
     if(getBanned())
     {
@@ -835,29 +584,14 @@ bool PtpUser::validateJsonForCreation(const Json::Value &pJson, std::string &err
         err="The account column cannot be null";
         return false;
     }
-    if(pJson.isMember("password"))
-    {
-        if(!validJsonOfField(2, "password", pJson["password"], err, true))
-            return false;
-    }
-    else
-    {
-        err="The password column cannot be null";
-        return false;
-    }
-    if(pJson.isMember("token"))
-    {
-        if(!validJsonOfField(3, "token", pJson["token"], err, true))
-            return false;
-    }
     if(pJson.isMember("banned"))
     {
-        if(!validJsonOfField(4, "banned", pJson["banned"], err, true))
+        if(!validJsonOfField(2, "banned", pJson["banned"], err, true))
             return false;
     }
     if(pJson.isMember("groups"))
     {
-        if(!validJsonOfField(5, "groups", pJson["groups"], err, true))
+        if(!validJsonOfField(3, "groups", pJson["groups"], err, true))
             return false;
     }
     else
@@ -871,7 +605,7 @@ bool PtpUser::validateMasqueradedJsonForCreation(const Json::Value &pJson,
                                                  const std::vector<std::string> &pMasqueradingVector,
                                                  std::string &err)
 {
-    if(pMasqueradingVector.size() != 6)
+    if(pMasqueradingVector.size() != 4)
     {
         err = "Bad masquerading vector";
         return false;
@@ -905,11 +639,6 @@ bool PtpUser::validateMasqueradedJsonForCreation(const Json::Value &pJson,
               if(!validJsonOfField(2, pMasqueradingVector[2], pJson[pMasqueradingVector[2]], err, true))
                   return false;
           }
-        else
-        {
-            err="The " + pMasqueradingVector[2] + " column cannot be null";
-            return false;
-        }
       }
       if(!pMasqueradingVector[3].empty())
       {
@@ -918,25 +647,9 @@ bool PtpUser::validateMasqueradedJsonForCreation(const Json::Value &pJson,
               if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, true))
                   return false;
           }
-      }
-      if(!pMasqueradingVector[4].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[4]))
-          {
-              if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, true))
-                  return false;
-          }
-      }
-      if(!pMasqueradingVector[5].empty())
-      {
-          if(pJson.isMember(pMasqueradingVector[5]))
-          {
-              if(!validJsonOfField(5, pMasqueradingVector[5], pJson[pMasqueradingVector[5]], err, true))
-                  return false;
-          }
         else
         {
-            err="The " + pMasqueradingVector[5] + " column cannot be null";
+            err="The " + pMasqueradingVector[3] + " column cannot be null";
             return false;
         }
       }
@@ -965,24 +678,14 @@ bool PtpUser::validateJsonForUpdate(const Json::Value &pJson, std::string &err)
         if(!validJsonOfField(1, "account", pJson["account"], err, false))
             return false;
     }
-    if(pJson.isMember("password"))
-    {
-        if(!validJsonOfField(2, "password", pJson["password"], err, false))
-            return false;
-    }
-    if(pJson.isMember("token"))
-    {
-        if(!validJsonOfField(3, "token", pJson["token"], err, false))
-            return false;
-    }
     if(pJson.isMember("banned"))
     {
-        if(!validJsonOfField(4, "banned", pJson["banned"], err, false))
+        if(!validJsonOfField(2, "banned", pJson["banned"], err, false))
             return false;
     }
     if(pJson.isMember("groups"))
     {
-        if(!validJsonOfField(5, "groups", pJson["groups"], err, false))
+        if(!validJsonOfField(3, "groups", pJson["groups"], err, false))
             return false;
     }
     return true;
@@ -991,7 +694,7 @@ bool PtpUser::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
                                                const std::vector<std::string> &pMasqueradingVector,
                                                std::string &err)
 {
-    if(pMasqueradingVector.size() != 6)
+    if(pMasqueradingVector.size() != 4)
     {
         err = "Bad masquerading vector";
         return false;
@@ -1020,16 +723,6 @@ bool PtpUser::validateMasqueradedJsonForUpdate(const Json::Value &pJson,
       if(!pMasqueradingVector[3].empty() && pJson.isMember(pMasqueradingVector[3]))
       {
           if(!validJsonOfField(3, pMasqueradingVector[3], pJson[pMasqueradingVector[3]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[4].empty() && pJson.isMember(pMasqueradingVector[4]))
-      {
-          if(!validJsonOfField(4, pMasqueradingVector[4], pJson[pMasqueradingVector[4]], err, false))
-              return false;
-      }
-      if(!pMasqueradingVector[5].empty() && pJson.isMember(pMasqueradingVector[5]))
-      {
-          if(!validJsonOfField(5, pMasqueradingVector[5], pJson[pMasqueradingVector[5]], err, false))
               return false;
       }
     }
@@ -1092,54 +785,13 @@ bool PtpUser::validJsonOfField(size_t index,
                 err="The " + fieldName + " column cannot be null";
                 return false;
             }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
-                return false;                
-            }
-            // asString().length() creates a string object, is there any better way to validate the length?
-            if(pJson.isString() && pJson.asString().length() > 255)
-            {
-                err="String length exceeds limit for the " +
-                    fieldName +
-                    " field (the maximum value is 255)";
-                return false;               
-            }
-
-            break;
-        case 3:
-            if(pJson.isNull())
-            {
-                return true;
-            }
-            if(!pJson.isString())
-            {
-                err="Type error in the "+fieldName+" field";
-                return false;                
-            }
-            // asString().length() creates a string object, is there any better way to validate the length?
-            if(pJson.isString() && pJson.asString().length() > 2048)
-            {
-                err="String length exceeds limit for the " +
-                    fieldName +
-                    " field (the maximum value is 2048)";
-                return false;               
-            }
-
-            break;
-        case 4:
-            if(pJson.isNull())
-            {
-                err="The " + fieldName + " column cannot be null";
-                return false;
-            }
             if(!pJson.isInt())
             {
                 err="Type error in the "+fieldName+" field";
                 return false;
             }
             break;
-        case 5:
+        case 3:
             if(pJson.isNull())
             {
                 err="The " + fieldName + " column cannot be null";
