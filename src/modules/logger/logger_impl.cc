@@ -21,6 +21,9 @@ Logger::~Logger() {}
 Logger::Logger() {}
 
 RC Logger::Start() {
+#ifndef NDEBUG
+  spdlog::default_logger()->set_level(spdlog::level::trace);
+#endif
   return RC::SUCCESS;
 }
 

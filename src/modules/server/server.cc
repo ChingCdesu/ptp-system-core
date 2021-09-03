@@ -28,6 +28,26 @@ RC Server::Start() {
   drogon::app()
       .createDbClient("mysql", "127.0.0.1", 3306, "ptp_system", "root",
                       "ChingC.local1")
+      .registerSyncAdvice([this](const drogon::HttpRequestPtr& req) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        const auto remoteIp = req->getPeerAddr().toIp();
+        const auto now = std::chrono::system_clock::now();
+        const auto now_s = std::chrono::duration_cast<std::chrono::seconds>(
+                               now.time_since_epoch())
+                               .count();
+        if (request_limit_.count(remoteIp) == 0) {
+          request_limit_.emplace(remoteIp, std::queue<int64_t>());
+        }
+        auto& queue = request_limit_[remoteIp];
+        queue.emplace(now_s);
+        if (queue.size() > 10) {
+          if (queue.back() - queue.front() < 10) {
+            PTP_WARNING("IP \"{}\" 在10s内发出过多请求", remoteIp);
+          }
+          queue.pop();
+        }
+        return nullptr;
+      })
       .registerPreRoutingAdvice([](const drogon::HttpRequestPtr& req) {
         req->addHeader("request_id", std::to_string(++request_id_));
         PTP_INFO("request {}: {} - - {} {} \nUser-Agent: {}", request_id_,
@@ -72,5 +92,6 @@ RC Server::Stop() {
   return RC::SUCCESS;
 }
 uint64_t Server::request_id_ = 0;
+std::unordered_map<std::string, std::queue<int64_t>> Server::request_limit_{};
 }  // namespace module
 }  // namespace ptp

@@ -23,6 +23,7 @@ std::string str_join(const std::vector<std::string>& vec,
                      const std::string& delimiter);
 
 bool isNumber(const std::string& str);
+bool isReadable(const std::string& str);
 
 uint32_t str2uint(const std::string& str, uint32_t defaultValue);
 

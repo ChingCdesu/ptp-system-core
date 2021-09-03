@@ -41,6 +41,11 @@ bool isNumber(const std::string& str) {
                                        [](char c) { return std::isdigit(c); });
 }
 
+bool isReadable(const std::string& str) {
+  return str.end() == std::find_if_not(str.begin(), str.end(),
+                                       [](char c) { return std::isprint(c); });
+}
+
 uint32_t str2uint(const std::string& str, uint32_t defaultValue) {
   return isNumber(str) ? std::stoul(str) : defaultValue;
 }

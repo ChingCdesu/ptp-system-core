@@ -12,6 +12,17 @@
 #ifndef PTP__LOGGER_IMPL_H
 #define PTP__LOGGER_IMPL_H
 
+
+#include <spdlog/common.h>
+#ifdef SPDLOG_ACTIVE_LEVEL
+#undef SPDLOG_ACTIVE_LEVEL
+#endif
+#ifndef NDEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+#else
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
+#endif
+
 #include <spdlog/spdlog.h>
 #include <spdlog/async.h>
 #include <fmt/core.h>
